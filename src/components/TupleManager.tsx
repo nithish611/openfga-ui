@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import openfgaApi from '../services/openfga-api';
@@ -37,7 +37,30 @@ export function TupleManager({ darkMode = false }: TupleManagerProps) {
     isOpen: false,
     tuple: null,
   });
-  
+  const [loadingMore, setLoadingMore] = useState(false);
+  const tableScrollRef = useRef<HTMLDivElement>(null);
+
+  const handleTableScroll = useCallback(() => {
+    const el = tableScrollRef.current;
+    if (!el || !tuplesContinuationToken || loadingMore || tuplesLoading) return;
+    const { scrollTop, scrollHeight, clientHeight } = el;
+    if (scrollHeight - scrollTop - clientHeight < 60) {
+      setLoadingMore(true);
+      openfgaApi.readTuples(
+        selectedStore!.id,
+        100,
+        tuplesContinuationToken
+      ).then((response) => {
+        appendTuples(response.tuples);
+        setTuplesContinuationToken(response.continuation_token || null);
+      }).catch((err) => {
+        console.error('Failed to load more tuples:', err);
+      }).finally(() => {
+        setLoadingMore(false);
+      });
+    }
+  }, [tuplesContinuationToken, loadingMore, tuplesLoading, selectedStore, appendTuples, setTuplesContinuationToken]);
+
   // Client-side filtered tuples
   const filteredTuples = useMemo(() => {
     const userFilter = filterUser.toLowerCase().trim();
@@ -339,7 +362,11 @@ export function TupleManager({ darkMode = false }: TupleManagerProps) {
       {/* Main Content Area with Side Panel */}
       <div className="flex-1 flex overflow-hidden">
         {/* Scrollable Table */}
-        <div className={`flex-1 overflow-auto ${selectedTuple ? 'border-r border-gray-200' : ''}`}>
+        <div
+          ref={tableScrollRef}
+          onScroll={handleTableScroll}
+          className={`flex-1 overflow-auto ${selectedTuple ? 'border-r border-gray-200' : ''}`}
+        >
           {tuplesLoading && tuples.length === 0 ? (
             <div className="flex items-center justify-center py-12">
               <svg className="animate-spin h-6 w-6 text-cyan-600" fill="none" viewBox="0 0 24 24">
@@ -409,15 +436,20 @@ export function TupleManager({ darkMode = false }: TupleManagerProps) {
                 </tbody>
               </table>
 
-              {tuplesContinuationToken && (
-                <div className="p-2 text-center border-t border-gray-100">
-                  <button
-                    onClick={() => loadTuples(false)}
-                    disabled={tuplesLoading}
-                    className="px-3 py-1 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 disabled:opacity-50 text-xs"
-                  >
-                    {tuplesLoading ? 'Loading...' : 'Load More'}
-                  </button>
+              {loadingMore && (
+                <div className="p-3 text-center border-t border-gray-100">
+                  <div className="flex items-center justify-center gap-2">
+                    <svg className="animate-spin h-4 w-4 text-cyan-500" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    </svg>
+                    <span className="text-xs text-gray-500">Loading more tuples...</span>
+                  </div>
+                </div>
+              )}
+              {tuplesContinuationToken && !loadingMore && (
+                <div className="p-1.5 text-center border-t border-gray-100">
+                  <span className="text-[10px] text-gray-400">Scroll for more</span>
                 </div>
               )}
             </>
