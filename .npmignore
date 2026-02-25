@@ -1,0 +1,34 @@
+# Source code (not needed — we ship pre-built dist/)
+src/
+public/
+index.html
+
+# Config files
+vite.config.ts
+tsconfig.json
+tsconfig.node.json
+tailwind.config.js
+postcss.config.js
+.eslintrc*
+
+# Dev/CI
+.github/
+.gitignore
+.vscode/
+.idea/
+.env*
+coverage/
+.vercel
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Source maps (optional — remove if you want them)
+dist/**/*.map
+
+# Node
+node_modules/

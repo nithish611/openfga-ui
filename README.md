@@ -76,7 +76,34 @@ A modern, feature-rich web interface for [OpenFGA](https://openfga.dev) — the 
 
 ---
 
-## Getting Started
+## Quick Start (npx)
+
+Run instantly without installing:
+
+```bash
+npx openfga-ui
+```
+
+This starts a local server at [http://localhost:3000](http://localhost:3000) and opens your browser automatically.
+
+### Options
+
+```bash
+npx openfga-ui --port 8080        # Custom port
+npx openfga-ui --host 0.0.0.0     # Bind to all interfaces
+npx openfga-ui --no-open           # Don't auto-open browser
+```
+
+### Global Install
+
+```bash
+npm install -g openfga-ui
+openfga-ui
+```
+
+---
+
+## Development
 
 ### Prerequisites
 
@@ -84,7 +111,7 @@ A modern, feature-rich web interface for [OpenFGA](https://openfga.dev) — the 
 - **npm** >= 9
 - A running [OpenFGA server](https://openfga.dev/docs/getting-started/setup-openfga/overview)
 
-### Installation
+### Setup
 
 ```bash
 git clone https://github.com/nithish611/openfga-ui.git
@@ -92,13 +119,13 @@ cd openfga-ui
 npm install
 ```
 
-### Development
+### Dev Server
 
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:5173](http://localhost:5173) in your browser.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ### Build
 

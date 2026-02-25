@@ -3,14 +3,48 @@
   "version": "1.0.0",
   "description": "Standalone UI for OpenFGA - Authorization Model Explorer and Query Executor",
   "type": "module",
+  "bin": {
+    "openfga-ui": "./bin/cli.mjs"
+  },
+  "files": [
+    "bin/",
+    "dist/",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "lint": "eslint . --ext .ts,.tsx"
+    "lint": "eslint . --ext .ts,.tsx",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "openfga",
+    "authorization",
+    "fga",
+    "fine-grained-authorization",
+    "access-control",
+    "ui",
+    "dashboard",
+    "admin",
+    "cli"
+  ],
+  "author": "nithish611",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nithish611/openfga-ui.git"
+  },
+  "bugs": {
+    "url": "https://github.com/nithish611/openfga-ui/issues"
+  },
+  "homepage": "https://github.com/nithish611/openfga-ui#readme",
+  "engines": {
+    "node": ">=18"
   },
   "dependencies": {
-    "@headlessui/react": "^2.1.2",    
+    "@headlessui/react": "^2.1.2",
     "@heroicons/react": "^2.1.5",
     "@types/dagre": "^0.7.53",
     "dagre": "^0.8.5",
